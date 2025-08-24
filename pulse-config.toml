@@ -1,0 +1,56 @@
+# 🫀 SOLANA PULSE VALIDATOR CONFIGURATION
+# MEV-Free, Equality-Based Blockchain Configuration
+# Genesis Pulse: Watch Build Block Toly
+
+[fees]
+# REDUCED FLAT FEE STRUCTURE - Much Lower Than Standard Solana
+# No priority bidding, everyone pays the same low fee
+target_lamports_per_signature = 1000        # Reduced from 5000 to 1000
+min_lamports_per_signature = 500             # Reduced minimum 
+max_lamports_per_signature = 1000            # Capped maximum
+burn_percent = 50                            # 50% burned (deflationary)
+
+[consensus]
+# FLAT SLOT TIMING - Equal rhythm for all blocks
+slot_duration_ms = 400                       # 400ms per slot
+max_genesis_archive_unpacked_size = 10000000
+skip_seed_phrase_validation = true
+
+[cluster]
+# EQUALITY-BASED EPOCH STRUCTURE
+slots_per_epoch = 432000                     # Same as mainnet
+stakers_slot_offset = 432000
+leader_schedule_slot_offset = 432000
+
+[accounts]
+# FAIR INITIAL DISTRIBUTION  
+faucet_lamports = 1000000000000000           # 1M SOL for testing
+bootstrap_validator_lamports = 1000000000000000  # 1M SOL for validator
+
+[rpc]
+# PUBLIC ACCESS CONFIGURATION
+bind_address = "0.0.0.0"                    # Allow external connections
+port = 8899                                  # Standard RPC port
+websocket_port = 8900                        # Standard WebSocket port
+enable_rpc_transaction_history = true       # Full transaction history
+enable_extended_tx_metadata_storage = true  # Extended metadata
+
+[validator]
+# MEV-FREE VALIDATOR SETTINGS
+no_snapshot_fetch = true                     # Use local genesis
+no_genesis_fetch = true                      # Use local genesis
+skip_seed_phrase_validation = true          # Allow generated keys
+log_level = "info"                          # Detailed logging
+
+[memo]
+# EMBEDDED MANIFESTO
+genesis_memo = "This is the block that breathes without bargain. We did not optimize. We aligned. We did not auction. We attuned. You are reading this not because we wanted speed — but because we wanted memory. This block remembers."
+
+[equality]
+# CORE PRINCIPLES (Documentation)
+no_mev_extraction = true
+no_tip_accounts = true  
+no_bundle_proposers = true
+no_priority_bidding = true
+fifo_processing = true
+flat_fee_structure = true

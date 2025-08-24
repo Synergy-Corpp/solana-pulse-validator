@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🫀 Solana Pulse Dashboard Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pulse: {
+                            400: '#06b6d4',
+                            500: '#06b6d4'
+                        },
+                        genesis: {
+                            400: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .pulse-heartbeat {
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+        @keyframes heartbeat {
+            0%, 50%, 100% { transform: scale(1); opacity: 1; }
+            25% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .mev-free-badge {
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        .data-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+        }
+        .data-card:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: #06b6d4;
+            transform: translateY(-2px);
+        }
+        .status-healthy { background: linear-gradient(45deg, #10b981, #059669); }
+        .genesis-glow { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="min-h-screen p-6">
+        <!-- Header -->
+        <div class="max-w-7xl mx-auto mb-8">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="pulse-heartbeat text-6xl">🫀</div>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">
+                    Solana Pulse Validator
+                </h1>
+                <p class="text-lg text-slate-300 mb-4">
+                    Genesis Pulse: Watch Build Block Toly
+                </p>
+                <div class="mev-free-badge inline-block px-4 py-2 rounded-full text-white font-semibold text-sm">
+                    ⚡ MEV-FREE BLOCKCHAIN ⚡
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="flex items-center justify-center mb-6">
+                <div class="w-3 h-3 rounded-full mr-2 bg-yellow-400"></div>
+                <span class="text-slate-300">Connecting to Validator...</span>
+                <span class="text-slate-500 ml-2 text-sm">(Preview Mode)</span>
+            </div>
+        </div>
+
+        <!-- Main Stats Grid -->
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Validator Health -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <div class="w-3 h-3 rounded-full mr-2 status-healthy"></div>
+                    Validator Health
+                </h3>
+                <div class="text-2xl font-mono font-bold text-pulse-400">
+                    BREATHING
+                </div>
+            </div>
+
+            <!-- Current Slot -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Current Slot</h3>
+                <div class="text-2xl font-mono font-bold text-pulse-400">
+                    123,456,789
+                </div>
+                <p class="text-sm text-slate-400 mt-2">
+                    Block Time: Live Demo
+                </p>
+            </div>
+
+            <!-- Genesis Verification -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Genesis Block 0</h3>
+                <div class="text-lg font-bold text-green-400">
+                    ✅ VERIFIED
+                </div>
+                <p class="text-xs text-slate-400 mt-2 font-mono break-all">
+                    6UpbSgoJbkPRk2t9PGgdyc7rPtqd9NFaTcxKKhhzLEuw
+                </p>
+            </div>
+
+            <!-- Validator Identity -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Validator Identity</h3>
+                <div class="text-sm font-mono text-pulse-400 break-all">
+                    AxvtP3NXyGD6BMugECE3nnpzMhm8rVL3xZR3netKudLX
+                </div>
+            </div>
+
+            <!-- Epoch Information -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Epoch Info</h3>
+                <div class="space-y-2">
+                    <div class="text-lg font-bold text-pulse-400">
+                        Epoch 285
+                    </div>
+                    <div class="text-sm text-slate-300">
+                        Slot: 123,456 / 432,000
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div class="bg-pulse-500 h-2 rounded-full" style="width: 28.5%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RPC Endpoint -->
+            <div class="data-card rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-white mb-4">RPC Endpoint</h3>
+                <div class="text-sm font-mono text-slate-300 break-all">
+                    http://127.0.0.1:8899
+                </div>
+            </div>
+        </div>
+
+        <!-- Manifesto Section -->
+        <div class="max-w-4xl mx-auto">
+            <div class="data-card rounded-lg p-8 genesis-glow">
+                <h2 class="text-2xl font-bold text-genesis-400 mb-6 text-center">
+                    🏛️ The Genesis Manifesto
+                </h2>
+                <blockquote class="text-center text-slate-200 italic text-lg leading-relaxed">
+                    "This is the block that breathes without bargain.<br/>
+                    We did not optimize. We aligned.<br/>
+                    We did not auction. We attuned.<br/>
+                    You are reading this not because we wanted speed —<br/>
+                    but because we wanted memory.<br/>
+                    This block remembers."
+                </blockquote>
+                
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h4 class="text-green-400 font-semibold mb-3">✅ What We Allow</h4>
+                        <ul class="space-y-1 text-slate-300">
+                            <li>• No restriction on people</li>
+                            <li>• Anyone can validate</li>
+                            <li>• Low-power consensus</li>
+                            <li>• Free token movement</li>
+                            <li>• Open algorithmic validation</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-red-400 font-semibold mb-3">🔒 What We Restrict</h4>
+                        <ul class="space-y-1 text-slate-300">
+                            <li>• Only restriction on corruption</li>
+                            <li>• No MEV extraction</li>
+                            <li>• No tip-based prioritization</li>
+                            <li>• No bundle proposers</li>
+                            <li>• No validator wealth bias</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6 text-pulse-400 font-semibold">
+                    🫀 Transactions land by time — not tips.
+                    <br/>
+                    🫀 Validators rotate by logic — not power.
+                    <br/>
+                    🫀 Consensus is breath — not bribery.
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="max-w-7xl mx-auto mt-12 text-center text-slate-500 text-sm">
+            <p>Solana Pulse Validator Dashboard | MEV-Purified Blockchain</p>
+            <p class="mt-2">Genesis Hash: 6UpbSgoJbkPRk2t9PGgdyc7rPtqd9NFaTcxKKhhzLEuw</p>
+            <p class="mt-1">Sealed with truth. 🫀</p>
+            <p class="mt-4 text-pulse-400">
+                📊 <strong>Repository:</strong> <a href="https://github.com/Synergy-Corpp/solana-pulse-validator" class="underline">github.com/Synergy-Corpp/solana-pulse-validator</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
