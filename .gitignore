@@ -1,0 +1,64 @@
+# Solana Pulse Fork - Git Ignore
+# No corruption. Only truth.
+
+# Build artifacts
+target/
+dist/
+build/
+*.o
+*.so
+*.a
+
+# Runtime data
+*.log
+*.pid
+*.lock
+test-ledger/
+genesis-ledger/
+validator.log
+*.json.bak
+
+# Keypairs - KEEP PRIVATE
+*.json
+!package.json
+!tsconfig.json
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+.vercel
+
+# Environment variables
+.env
+.env.local
+.env.production.local
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Rust specific
+Cargo.lock
+**/*.rs.bk
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/*
