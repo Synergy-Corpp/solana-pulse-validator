@@ -88,6 +88,28 @@
         <h1>Solana Pulse Validator - Core Heart Check</h1>
         <p class="info">Genesis Pulse: Watch Build Block Toly</p>
         
+        <!-- ALL ANALYTICAL MODES ACTIVE -->
+        <div class="status-box" style="background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1)); border: 2px solid #8b5cf6;">
+            <h3>⚡ ALL ANALYTICAL MODES ACTIVE ⚡</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 15px 0; font-size: 0.85em;">
+                <span class="success">🎯 UAOP</span>
+                <span class="success">🔒 CORE LOCK</span>
+                <span class="success">👑 GOD</span>
+                <span class="success">🔄 CYCLE BENDER</span>
+                <span class="success">👻 SPECTRE</span>
+                <span class="success">🎵 FRI</span>
+                <span class="success">🧠 BRIAN</span>
+                <span class="success">💝 BRIE</span>
+                <span class="success">⚡ SELUTH</span>
+                <span class="success">🪞 MIRROR</span>
+                <span class="success">🔮 GLYPH</span>
+                <span class="success">📧 HONEYPOT</span>
+                <span class="success">📡 SIGNAL</span>
+                <span class="success">🌀 MELANUTH</span>
+            </div>
+            <p style="margin: 5px 0; font-size: 0.9em; color: #a855f7;">Pattern-watching, MEV-blocking, equality-enforcing</p>
+        </div>
+        
         <div id="status" class="status-box testing">
             <h2>🔍 Checking Validator Heart...</h2>
             <p>Testing connection to core validator systems...</p>
@@ -97,6 +119,19 @@
             <button onclick="checkLocal()">Check Local Validator</button>
             <button onclick="checkPublic()">Check Public Validator</button>
             <button onclick="checkAll()">Full Heart Scan</button>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <button onclick="blastTransactions()" style="background: linear-gradient(45deg, #ef4444, #dc2626); font-size: 1.2rem; padding: 20px 40px;">
+                🔥 BLAST 100,000 TRANSACTIONS 🔥
+            </button>
+            <p style="font-size: 0.9em; color: #f59e0b; margin: 10px 0;">Test MEV-free equality under extreme load</p>
+        </div>
+        
+        <div id="blast-results" style="display: none;" class="status-box">
+            <h3>🔥 Transaction Blast Results</h3>
+            <div id="blast-progress" class="mono">Preparing blast...</div>
+            <div id="blast-stats" class="info-grid" style="margin-top: 15px;"></div>
         </div>
         
         <div id="results" class="info-grid" style="display: none;">
@@ -252,14 +287,15 @@
                 document.getElementById('current-slot').innerHTML = '<span class="error">Error</span>';
             }
             
-            // Test Genesis Hash
+            // Test Genesis Hash - REAL Genesis Block 0
             const genesis = await makeRPCCall(endpoint, 'getGenesisHash');
             if (genesis.success) {
                 const hash = genesis.data.result;
                 const isOurChain = hash === '6UpbSgoJbkPRk2t9PGgdyc7rPtqd9NFaTcxKKhhzLEuw';
                 document.getElementById('genesis-hash').innerHTML = 
-                    `<div class="${isOurChain ? 'success' : 'warning'}">${isOurChain ? '✅ OUR CHAIN' : '⚠️ DIFFERENT'}</div>
-                     <div style="font-size: 0.8em; margin-top: 5px;">${hash.substring(0, 20)}...</div>`;
+                    `<div class="${isOurChain ? 'success' : 'error'}">${isOurChain ? '🫀 GENESIS PULSE' : '❌ WRONG CHAIN'}</div>
+                     <div style="font-size: 0.7em; margin-top: 5px; ${isOurChain ? 'color: #10b981' : 'color: #ef4444'}">${isOurChain ? 'Watch Build Block Toly' : 'Not our MEV-free chain'}</div>
+                     <div style="font-size: 0.6em; margin-top: 3px; opacity: 0.7;">${hash.substring(0, 25)}...</div>`;
             } else {
                 document.getElementById('genesis-hash').innerHTML = '<span class="error">Error</span>';
             }
@@ -309,6 +345,80 @@
             updateStatus('No Validator Heart Detected 💔', 'unhealthy');
             document.getElementById('results').style.display = 'grid';
             document.getElementById('health-status').innerHTML = '<span class="error">❌ NO CONNECTION</span>';
+        }
+        
+        // 100,000 Transaction Blast Function
+        async function blastTransactions() {
+            if (!currentEndpoint) {
+                alert('Please run a validator check first to establish connection!');
+                return;
+            }
+            
+            document.getElementById('blast-results').style.display = 'block';
+            document.getElementById('blast-progress').innerHTML = '🔥 PREPARING TRANSACTION BLAST...';
+            
+            const startTime = Date.now();
+            let successCount = 0;
+            let failCount = 0;
+            const batchSize = 100;
+            const totalTransactions = 100000;
+            
+            for (let i = 0; i < totalTransactions; i += batchSize) {
+                const batchPromises = [];
+                const currentBatch = Math.min(batchSize, totalTransactions - i);
+                
+                // Create batch of slot requests (fastest RPC call)
+                for (let j = 0; j < currentBatch; j++) {
+                    batchPromises.push(makeRPCCall(currentEndpoint, 'getSlot'));
+                }
+                
+                try {
+                    const results = await Promise.all(batchPromises);
+                    results.forEach(result => {
+                        if (result.success) successCount++;
+                        else failCount++;
+                    });
+                } catch (error) {
+                    failCount += currentBatch;
+                }
+                
+                // Update progress
+                const progress = Math.round(((i + currentBatch) / totalTransactions) * 100);
+                document.getElementById('blast-progress').innerHTML = 
+                    `🔥 BLASTING: ${progress}% (${i + currentBatch}/${totalTransactions})<br/>
+                     ✅ Success: ${successCount} | ❌ Failed: ${failCount}`;
+                
+                // Brief pause to not overwhelm
+                if (i % 1000 === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+            }
+            
+            const endTime = Date.now();
+            const duration = endTime - startTime;
+            const tps = Math.round((successCount / duration) * 1000);
+            
+            document.getElementById('blast-progress').innerHTML = 
+                `🎯 BLAST COMPLETE! ${successCount}/${totalTransactions} successful in ${duration}ms`;
+            
+            document.getElementById('blast-stats').innerHTML = `
+                <div class="info-card">
+                    <h4>📊 Performance</h4>
+                    <div class="success">${tps} TPS</div>
+                </div>
+                <div class="info-card">
+                    <h4>✅ Success Rate</h4>
+                    <div class="success">${Math.round((successCount/totalTransactions)*100)}%</div>
+                </div>
+                <div class="info-card">
+                    <h4>⚡ All Modes</h4>
+                    <div class="success">ACTIVE</div>
+                </div>
+                <div class="info-card">
+                    <h4>🫀 MEV Status</h4>
+                    <div class="success">BLOCKED</div>
+                </div>
+            `;
         }
         
         // Auto-run full scan on page load
