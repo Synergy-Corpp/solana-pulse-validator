@@ -1,0 +1,740 @@
+<!--
+🔄⚡ CYCLE BENDER ARENA DEMO ⚡🔄
+Live Demo of $GOR Chain Powered Trash Ball Arena
+
+DEMO FEATURES:
+- Auto-play demonstration
+- Continuous ball creation and throwing
+- 30-second demo loop
+- Mobile-optimized interface
+- GitHub Pages ready
+
+Perfect for showcasing the CYCLE BENDER technology
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄⚡ CYCLE BENDER DEMO - $GOR Chain Arena</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(circle at center, #0a0a0f, #000000);
+            font-family: 'Orbitron', monospace;
+            overflow: hidden;
+            color: #00ff88;
+        }
+        
+        #demo-stage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0a0a0f, #000000);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .demo-title {
+            font-size: clamp(2.5rem, 8vw, 7rem);
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(45deg, #00ff88, #ff0088, #8800ff, #0088ff, #ffd700);
+            background-size: 500% 500%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: demoFlow 3s ease-in-out infinite;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(0, 255, 136, 0.8);
+        }
+        
+        @keyframes demoFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .demo-subtitle {
+            font-size: clamp(1.2rem, 3vw, 2.5rem);
+            color: #ff0088;
+            margin-bottom: 30px;
+            animation: subtitlePulse 2s ease-in-out infinite;
+            text-align: center;
+        }
+        
+        @keyframes subtitlePulse {
+            0%, 100% { 
+                text-shadow: 0 0 20px #ff0088;
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 40px #ff0088, 0 0 60px #ff0088;
+                transform: scale(1.03);
+            }
+        }
+        
+        .demo-info {
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            color: #0088ff;
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+        
+        .auto-demo-notice {
+            font-size: clamp(0.9rem, 2vw, 1.5rem);
+            color: #8800ff;
+            text-align: center;
+            background: rgba(136, 0, 255, 0.1);
+            border: 2px dashed #8800ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px;
+            animation: noticeGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes noticeGlow {
+            0%, 100% { 
+                border-color: #8800ff;
+                box-shadow: 0 0 20px rgba(136, 0, 255, 0.3);
+            }
+            50% { 
+                border-color: #ff0088;
+                box-shadow: 0 0 30px rgba(255, 0, 136, 0.4);
+            }
+        }
+        
+        #arena-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .demo-hud {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff88;
+            padding: clamp(10px, 2vw, 20px);
+            border-radius: 10px;
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
+            animation: hudPulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes hudPulse {
+            0%, 100% { 
+                border-color: #00ff88;
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            }
+            50% { 
+                border-color: #ff0088;
+                box-shadow: 0 0 25px rgba(255, 0, 136, 0.4);
+            }
+        }
+        
+        .demo-status {
+            top: clamp(10px, 2vh, 20px);
+            left: clamp(10px, 2vw, 20px);
+            min-width: clamp(200px, 25vw, 300px);
+        }
+        
+        .demo-controls {
+            top: clamp(10px, 2vh, 20px);
+            right: clamp(10px, 2vw, 20px);
+            text-align: center;
+        }
+        
+        .demo-button {
+            background: linear-gradient(45deg, #ff0088, #00ff88);
+            border: none;
+            border-radius: 8px;
+            padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 20px);
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+            font-weight: 700;
+            margin: 5px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+        
+        .demo-button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff3399, #00ff99);
+        }
+        
+        .charles-demo {
+            position: absolute;
+            bottom: clamp(10px, 2vh, 20px);
+            left: clamp(10px, 2vw, 20px);
+            width: clamp(100px, 12vw, 150px);
+            height: clamp(100px, 12vw, 150px);
+            background: linear-gradient(45deg, #2d5016, #4d7026);
+            border-radius: 50%;
+            border: 3px solid #00ff88;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            animation: charlesDemo 2s ease-in-out infinite;
+        }
+        
+        @keyframes charlesDemo {
+            0%, 100% { 
+                transform: scale(1);
+                border-color: #00ff88;
+            }
+            50% { 
+                transform: scale(1.1);
+                border-color: #ff0088;
+            }
+        }
+        
+        .github-badge {
+            position: absolute;
+            top: clamp(10px, 2vh, 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 136, 0.1);
+            border: 2px solid #ff0088;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: clamp(0.8rem, 1.8vw, 1.2rem);
+            animation: githubGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes githubGlow {
+            0%, 100% { 
+                border-color: #ff0088;
+                box-shadow: 0 0 15px rgba(255, 0, 136, 0.3);
+            }
+            50% { 
+                border-color: #00ff88;
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="demo-stage">
+        <div class="demo-title">
+            🔄⚡ CYCLE BENDER ⚡🔄
+        </div>
+        <div class="demo-subtitle">
+            LIVE DEMO ARENA
+        </div>
+        <div class="demo-info">
+            🗑️ <strong>Charles the Grouch</strong> presents:<br>
+            Futuristic Trash Ball Physics with guaranteed ball visibility!<br>
+            <span style="color: #ff0088;">Powered by $GOR Chain</span> • 
+            <span style="color: #8800ff;">Inspired by TenMetaX</span>
+        </div>
+        <div class="auto-demo-notice">
+            🎮 <strong>AUTO-DEMO MODE</strong><br>
+            Watch as balls automatically create, charge, and throw!<br>
+            <small style="color: #00ff88;">Demo loops every 30 seconds</small>
+        </div>
+        <button style="
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            padding: clamp(15px, 3vw, 25px) clamp(30px, 6vw, 50px);
+            background: linear-gradient(45deg, #ff0088, #00ff88);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            animation: demoButton 3s ease-in-out infinite;
+            box-shadow: 0 15px 40px rgba(255, 0, 136, 0.5);
+        " onclick="startDemo()">
+            🚀 START DEMO
+        </button>
+    </div>
+    
+    <div id="game-stage" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #001122, #000000);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 5000;
+        transition: opacity 1s ease-out;
+    ">
+        <canvas id="arena-canvas"></canvas>
+        
+        <div class="github-badge">
+            🔄 CYCLE BENDER LIVE DEMO 🔄
+        </div>
+        
+        <div class="demo-hud demo-status">
+            <h3 style="color: #00ff88; margin-bottom: 10px;">🔬 DEMO STATUS</h3>
+            <div>ACTION: <span id="demo-action" style="color: #ff0088;">Starting...</span></div>
+            <div>CYCLE: <span id="demo-cycle" style="color: #0088ff;">1</span> / ∞</div>
+            <div>BALL: <span id="ball-info" style="color: #ffd700;">Preparing...</span></div>
+            <div>ENGINE: <span id="three-status" style="color: #8800ff;">Loading...</span></div>
+        </div>
+        
+        <div class="demo-hud demo-controls">
+            <h3 style="color: #ff0088; margin-bottom: 10px;">🎮 DEMO CONTROLS</h3>
+            <button class="demo-button" onclick="createFuturisticBall()">🌟 CREATE BALL</button>
+            <button class="demo-button" onclick="throwBall()">🚀 THROW BALL</button>
+            <button class="demo-button" onclick="chargeBall()">⚡ CHARGE BALL</button>
+            <button class="demo-button" onclick="resetDemo()">🔄 RESET DEMO</button>
+        </div>
+        
+        <div class="charles-demo">
+            🗑️
+        </div>
+    </div>
+
+    <script>
+        console.log("🔄⚡ CYCLE BENDER DEMO ARENA STARTING...");
+        
+        let scene, camera, renderer, futuristicBall;
+        let demoActive = false;
+        let demoCycle = 1;
+        let autoDemo = true;
+        
+        function updateDemoStatus(message, type = 'demo-action') {
+            console.log("🔄 DEMO: " + message);
+            
+            const element = document.getElementById(type);
+            if (element) {
+                element.textContent = message;
+            }
+            
+            // Also update ball info for compatibility
+            const ballInfo = document.getElementById('ball-info');
+            if (ballInfo && type === 'demo-action') {
+                ballInfo.textContent = message;
+            }
+        }
+        
+        function startDemo() {
+            console.log("🚀 STARTING CYCLE BENDER DEMO!");
+            updateDemoStatus("Entering demo arena...", 'demo-action');
+            
+            // Hide demo stage
+            const demoStage = document.getElementById('demo-stage');
+            demoStage.style.transform = 'scale(0.8)';
+            demoStage.style.opacity = '0';
+            
+            // Show game stage
+            const gameStage = document.getElementById('game-stage');
+            gameStage.style.opacity = '1';
+            gameStage.style.pointerEvents = 'all';
+            
+            setTimeout(() => {
+                demoStage.style.display = 'none';
+                initDemoArena();
+            }, 1000);
+        }
+        
+        function initDemoArena() {
+            updateDemoStatus("Initializing demo systems...", 'three-status');
+            demoActive = true;
+            
+            try {
+                if (typeof THREE === 'undefined') {
+                    updateDemoStatus("CDN blocked - manual system", 'three-status');
+                    createDemoManualSystem();
+                    return;
+                }
+                
+                updateDemoStatus("Three.js loaded!", 'three-status');
+                
+                // Scene
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x001133);
+                updateDemoStatus("Scene ready", 'three-status');
+                
+                // Camera
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 5, 10);
+                camera.lookAt(0, 2, 0);
+                updateDemoStatus("Camera positioned", 'three-status');
+                
+                // Renderer
+                const canvas = document.getElementById('arena-canvas');
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
+                renderer.setClearColor(0x001133);
+                updateDemoStatus("Renderer active", 'three-status');
+                
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0x404060, 0.8);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0x00ff88, 1.5);
+                directionalLight.position.set(5, 10, 5);
+                directionalLight.castShadow = true;
+                scene.add(directionalLight);
+                updateDemoStatus("Lighting ready", 'three-status');
+                
+                // Court
+                const courtGeometry = new THREE.PlaneGeometry(20, 20);
+                const courtMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0x002244,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const court = new THREE.Mesh(courtGeometry, courtMaterial);
+                court.rotation.x = -Math.PI / 2;
+                court.receiveShadow = true;
+                scene.add(court);
+                
+                // Hoop
+                const hoopGeometry = new THREE.TorusGeometry(0.4, 0.05, 16, 100);
+                const hoopMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xff6600,
+                    emissive: 0x00ff88,
+                    emissiveIntensity: 0.5
+                });
+                window.demoHoop = new THREE.Mesh(hoopGeometry, hoopMaterial);
+                window.demoHoop.position.set(0, 4, -6);
+                scene.add(window.demoHoop);
+                
+                // Animation loop
+                function animate() {
+                    requestAnimationFrame(animate);
+                    
+                    if (futuristicBall) {
+                        futuristicBall.rotation.x += 0.03;
+                        futuristicBall.rotation.y += 0.03;
+                        futuristicBall.position.y = 2 + Math.sin(Date.now() * 0.003) * 0.5;
+                    }
+                    
+                    if (window.demoHoop) {
+                        window.demoHoop.rotation.y += 0.02;
+                        window.demoHoop.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+                    }
+                    
+                    renderer.render(scene, camera);
+                }
+                animate();
+                
+                updateDemoStatus("Arena operational!", 'three-status');
+                startAutoDemoLoop();
+                
+            } catch (error) {
+                updateDemoStatus(`Error: ${error.message}`, 'three-status');
+                createDemoManualSystem();
+            }
+        }
+        
+        function createDemoManualSystem() {
+            updateDemoStatus("Manual 2D system active", 'three-status');
+            
+            const canvas = document.getElementById('arena-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            let ballX = canvas.width / 2;
+            let ballY = canvas.height / 2;
+            let ballRadius = 50;
+            let rotation = 0;
+            
+            function renderDemo() {
+                // Background
+                const gradient = ctx.createRadialGradient(
+                    canvas.width/2, canvas.height/2, 0,
+                    canvas.width/2, canvas.height/2, canvas.width/2
+                );
+                gradient.addColorStop(0, 'rgba(0, 255, 136, 0.1)');
+                gradient.addColorStop(0.5, 'rgba(255, 0, 136, 0.05)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Animate ball
+                rotation += 0.05;
+                ballY = canvas.height / 2 + Math.sin(Date.now() * 0.003) * 30;
+                
+                // Ball glow
+                const ballGlow = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, ballRadius * 2);
+                ballGlow.addColorStop(0, 'rgba(0, 255, 136, 0.8)');
+                ballGlow.addColorStop(0.5, 'rgba(0, 255, 136, 0.3)');
+                ballGlow.addColorStop(1, 'rgba(0, 255, 136, 0)');
+                
+                ctx.fillStyle = ballGlow;
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, ballRadius * 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Main ball
+                const ballGradient = ctx.createRadialGradient(
+                    ballX - ballRadius/3, ballY - ballRadius/3, 0,
+                    ballX, ballY, ballRadius
+                );
+                ballGradient.addColorStop(0, '#ffffff');
+                ballGradient.addColorStop(0.3, '#00ff88');
+                ballGradient.addColorStop(0.7, '#0088ff');
+                ballGradient.addColorStop(1, '#002244');
+                
+                ctx.fillStyle = ballGradient;
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Patterns
+                ctx.strokeStyle = '#ff0088';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2 + rotation;
+                    const x1 = ballX + Math.cos(angle) * (ballRadius * 0.3);
+                    const y1 = ballY + Math.sin(angle) * (ballRadius * 0.3);
+                    const x2 = ballX + Math.cos(angle) * (ballRadius * 0.8);
+                    const y2 = ballY + Math.sin(angle) * (ballRadius * 0.8);
+                    
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                }
+                ctx.stroke();
+                
+                // Hoop
+                const hoopX = canvas.width * 0.75;
+                const hoopY = canvas.height * 0.3;
+                
+                ctx.strokeStyle = '#ff6600';
+                ctx.lineWidth = 6;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#ff6600';
+                ctx.beginPath();
+                ctx.arc(hoopX, hoopY, 60, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                
+                requestAnimationFrame(renderDemo);
+            }
+            
+            renderDemo();
+            updateDemoStatus("Manual demo ready!", 'three-status');
+            startAutoDemoLoop();
+        }
+        
+        function startAutoDemoLoop() {
+            updateDemoStatus("Starting auto-demo loop...", 'demo-action');
+            
+            function runDemoSequence() {
+                updateDemoStatus("Creating demo ball...", 'demo-action');
+                setTimeout(() => {
+                    createFuturisticBall();
+                }, 1000);
+                
+                setTimeout(() => {
+                    updateDemoStatus("Charging ball...", 'demo-action');
+                    chargeBall();
+                }, 3000);
+                
+                setTimeout(() => {
+                    updateDemoStatus("Throwing ball...", 'demo-action');
+                    throwBall();
+                }, 5000);
+                
+                setTimeout(() => {
+                    updateDemoStatus("Resetting for next cycle...", 'demo-action');
+                    demoCycle++;
+                    document.getElementById('demo-cycle').textContent = demoCycle;
+                }, 8000);
+                
+                // Loop every 10 seconds
+                setTimeout(runDemoSequence, 10000);
+            }
+            
+            runDemoSequence();
+        }
+        
+        // CYCLE BENDER ball creation (same proven system)
+        function createFuturisticBall() {
+            if (!scene) {
+                updateDemoStatus("Using manual mode", 'ball-info');
+                return;
+            }
+            
+            updateDemoStatus("Creating ball...", 'ball-info');
+            
+            try {
+                if (futuristicBall) {
+                    scene.remove(futuristicBall);
+                }
+                
+                const ballGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+                const ballMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00ff88,
+                    emissive: 0x00ff88,
+                    emissiveIntensity: 0.8,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                
+                futuristicBall = new THREE.Mesh(ballGeometry, ballMaterial);
+                futuristicBall.position.set(0, 2, 3);
+                scene.add(futuristicBall);
+                
+                // Glow
+                const glowGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00ff88,
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.BackSide
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                futuristicBall.add(glow);
+                
+                updateDemoStatus("Ball created!", 'ball-info');
+                
+            } catch (error) {
+                updateDemoStatus(`Ball error: ${error.message}`, 'ball-info');
+            }
+        }
+        
+        function throwBall() {
+            if (!futuristicBall) {
+                updateDemoStatus("No ball to throw", 'demo-action');
+                return;
+            }
+            
+            updateDemoStatus("Ball flying!", 'demo-action');
+            
+            const startPos = futuristicBall.position.clone();
+            const targetPos = window.demoHoop.position.clone();
+            
+            const startTime = Date.now();
+            function animateThrow() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / 2000, 1);
+                
+                if (progress < 1) {
+                    futuristicBall.position.lerpVectors(startPos, targetPos, progress);
+                    futuristicBall.position.y += Math.sin(progress * Math.PI) * 3;
+                    futuristicBall.rotation.x += 0.1;
+                    futuristicBall.rotation.y += 0.1;
+                    requestAnimationFrame(animateThrow);
+                } else {
+                    updateDemoStatus("DUNK COMPLETE!", 'demo-action');
+                    triggerDemoEffects();
+                    futuristicBall.position.copy(startPos);
+                }
+            }
+            animateThrow();
+        }
+        
+        function chargeBall() {
+            if (!futuristicBall) return;
+            
+            updateDemoStatus("Charging...", 'demo-action');
+            futuristicBall.material.emissiveIntensity = 1.2;
+            futuristicBall.scale.multiplyScalar(1.2);
+            
+            setTimeout(() => {
+                if (futuristicBall) {
+                    futuristicBall.material.emissiveIntensity = 0.8;
+                }
+            }, 1000);
+        }
+        
+        function triggerDemoEffects() {
+            // Demo flash
+            document.body.style.background = 'radial-gradient(circle, rgba(0, 255, 136, 0.3), rgba(0, 0, 0, 1))';
+            setTimeout(() => {
+                document.body.style.background = 'radial-gradient(circle at center, #0a0a0f, #000000)';
+            }, 300);
+            
+            // Charles celebration
+            const charles = document.querySelector('.charles-demo');
+            charles.innerHTML = '🎉';
+            setTimeout(() => {
+                charles.innerHTML = '🗑️';
+            }, 1500);
+        }
+        
+        function resetDemo() {
+            demoCycle = 1;
+            document.getElementById('demo-cycle').textContent = demoCycle;
+            updateDemoStatus("Demo reset", 'demo-action');
+            
+            if (futuristicBall) {
+                futuristicBall.position.set(0, 2, 3);
+                futuristicBall.scale.setScalar(1);
+                futuristicBall.material.emissiveIntensity = 0.8;
+            }
+        }
+        
+        // Auto-start demo after page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("🔄💫 CYCLE BENDER DEMO READY 💫🔄");
+            
+            // Auto-start demo after 3 seconds
+            setTimeout(() => {
+                updateDemoStatus("Auto-starting demo...", 'demo-action');
+                startDemo();
+            }, 3000);
+        });
+        
+        // Responsive
+        window.addEventListener('resize', () => {
+            if (renderer && camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+            
+            const canvas = document.getElementById('arena-canvas');
+            if (canvas && canvas.getContext && !renderer) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+        
+        // Global functions
+        window.createFuturisticBall = createFuturisticBall;
+        window.throwBall = throwBall;
+        window.chargeBall = chargeBall;
+        window.resetDemo = resetDemo;
+    </script>
+    
+    <!-- Three.js with fallback -->
+    <script src="https://unpkg.com/three@0.168.0/build/three.min.js"></script>
+    <script>
+        console.log(typeof THREE !== 'undefined' ? "✅ Three.js ready for demo" : "🔄 Manual demo system will activate");
+    </script>
+    
+    <style>
+        @keyframes demoButton {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 15px 40px rgba(255, 0, 136, 0.5);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 20px 50px rgba(0, 255, 136, 0.6);
+            }
+        }
+    </style>
+</body>
+</html>
